@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Data Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Universal Data Analyzer</h1>
+            <p>Upload any CSV or Excel file for automatic statistical analysis</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="upload-section">
+            <form method="post" enctype="multipart/form-data" class="upload-form">
+                <div class="file-input-wrapper">
+                    <input type="file" name="file" id="file" accept=".csv,.xlsx,.xls" required>
+                    <label for="file" class="file-label">
+                        <i class="upload-icon">📁</i>
+                        <span>Choose CSV or Excel File</span>
+                    </label>
+                </div>
+                <button type="submit" class="analyze-button">
+                    <i class="analyze-icon">🔍</i>
+                    Analyze Data
+                </button>
+            </form>
+        </div>
+
+        <div class="features">
+            <h2>What This Tool Analyzes:</h2>
+            <div class="features-grid">
+                
+                <!-- Statistical Tests -->
+                <div class="feature-card">
+                    <h3>Statistical Tests</h3>
+                    <ul>
+                        <li>T-Test (Independent)</li>
+                        <li>ANOVA</li>
+                        <li>Mann-Whitney</li>
+                        <li>Wilcoxon</li>
+                        <li>Chi-Square</li>
+                        <li>Fisher Exact Test</li>
+                    </ul>
+                </div>
+
+                <!-- Correlations -->
+                <div class="feature-card">
+                    <h3>Correlation Analysis</h3>
+                    <ul>
+                        <li>Pearson Correlation</li>
+                        <li>Spearman Correlation</li>
+                        <li>Kendall Correlation</li>
+                        <li>Top 10 Correlated Pairs</li>
+                    </ul>
+                </div>
+
+                <!-- Visualizations -->
+                <div class="feature-card">
+                    <h3>Visualizations</h3>
+                    <ul>
+                        <li>Distribution Plots</li>
+                        <li>Correlation Heatmap</li>
+                        <li>Frequency Histograms</li>
+                        <li>Box Plots (Optional)</li>
+                    </ul>
+                </div>
+
+                <!-- Basic Data Summary -->
+                <div class="feature-card">
+                    <h3>Data Summary</h3>
+                    <ul>
+                        <li>Basic Info (Rows & Columns)</li>
+                        <li>Numeric & Categorical Variables</li>
+                        <li>Missing Value Summary</li>
+                        <li>Data Preview (First 10 Rows)</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('file').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'Choose CSV or Excel File';
+            document.querySelector('.file-label span').textContent = fileName;
+        });
+    </script>
+
+</body>
+</html>

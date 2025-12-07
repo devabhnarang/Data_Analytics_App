@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container">
+
+
+    <div class="dashboard-header">
+        <h1>📊 Analysis Dashboard</h1>
+        <p>Complete statistical overview of your uploaded dataset</p>
+        <a href="/" class="back-button">← Upload Another File</a>
+    </div>
+
+  
+    <section class="info-section">
+        <h2>📋 Dataset Overview</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ results.basic_info.rows }}</div>
+                <div class="stat-label">Rows</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number">{{ results.basic_info.columns }}</div>
+                <div class="stat-label">Columns</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number">{{ results.basic_info.numeric_cols|length }}</div>
+                <div class="stat-label">Numeric Columns</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number">{{ results.basic_info.categorical_cols|length }}</div>
+                <div class="stat-label">Categorical Columns</div>
+            </div>
+        </div>
+
+      
+        <div class="columns-section">
+            <div>
+                <h3>Numeric Columns</h3>
+                <div class="column-tags">
+                    {% for col in results.basic_info.numeric_cols %}
+                    <span class="column-tag">{{ col }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <h3>Categorical Columns</h3>
+                <div class="column-tags">
+                    {% for col in results.basic_info.categorical_cols %}
+                    <span class="column-tag categorical">{{ col }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="info-section">
+        <h2>🧪 Statistical Tests</h2>
+
+        <div class="tests-grid">
+
+            {% for key, test in results.statistical_tests.items() %}
+            <div class="test-card">
+                <h3>{{ test.test }}</h3>
+                <p><strong>Variables:</strong> {{ test.variables }}</p>
+                <p><strong>Statistic:</strong> {{ test.statistic }}</p>
+                <p><strong>P-Value:</strong> {{ test.p_value }}</p>
+
+                <p>
+                    <strong>Significant:</strong>
+                    <span class="significance-badge {% if test.significant %}significant{% else %}not-significant{% endif %}">
+                        {{ "Yes" if test.significant else "No" }}
+                    </span>
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+   
+    <section class="info-section">
+        <h2>📈 Correlation Analysis</h2>
+
+        {% for type, corr in results.correlations.items() %}
+        <h3>{{ type|capitalize }} Correlations</h3>
+
+        <div class="correlations-list">
+            {% for c in corr.top_pairs %}
+            <div class="correlation-item">
+                <p><strong>{{ c.var1 }} ↔ {{ c.var2 }}</strong></p>
+
+                <p class="correlation-value
+                {% if c.abs_corr > 0.7 %}strong
+                {% elif c.abs_corr > 0.3 %}moderate
+                {% else %}weak{% endif %}">
+                    {{ c.correlation }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+    </section>
+
+  
+    <section class="info-section">
+        <h2>📊 Visualizations</h2>
+
+        <div class="visualizations-grid">
+            {% for plot in results.plots %}
+            <div class="plot-card">
+                <img src="{{ url_for('static', filename=plot) }}" alt="Plot">
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    
+    <section class="info-section">
+        <h2>📋 Data Preview (Top 10 Rows)</h2>
+
+        <table class="preview-table">
+            <thead>
+                <tr>
+                    {% for col in results.data_preview[0].keys() %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for row in results.data_preview %}
+                <tr>
+                    {% for val in row.values() %}
+                    <td>{{ val }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+</div>
+</body>
+</html>
